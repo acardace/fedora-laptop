@@ -6,7 +6,7 @@ LABEL quay.expires-after=8w
 COPY redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm .
 
 RUN rpm-ostree install fastfetch neovim git buildah fish fzf  ripgrep bat \
-    stow fd-find wireguard-tools tmux NetworkManager-openvpn \
+    stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
     redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm && \
     rm redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm && \
 	ostree container commit
