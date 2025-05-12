@@ -3,6 +3,7 @@ name: "Build a custom Fedora Atomic image"
 env:
   IMAGE_NAME: "fedora-atomic"
   REGISTRY: "quay.io/acardace"
+  IMAGE_TAG: "silverblue"
 
 on:
   workflow_dispatch:
@@ -39,7 +40,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: cosmic ${{ github.sha }}
+          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
           containerfiles: Containerfile
           layers: false
           oci: true
@@ -52,4 +53,4 @@ jobs:
           password: ${{ secrets.BOT_PASSWORD }}
           image: ${{ env.IMAGE_NAME }}
           registry: ${{ env.REGISTRY }}
-          tags: cosmic ${{ github.sha }}
+          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
