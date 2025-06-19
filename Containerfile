@@ -9,6 +9,6 @@ RUN /bin/bash -c "curl -L 'https://bitwarden.com/download/?app=cli&platform=linu
 
 RUN rpm-ostree install fastfetch neovim git buildah fish fzf  ripgrep bat \
     stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
-    redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm && \
+    redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm https://github.com/block/goose/releases/download/v1.0.29/Goose-1.0.29-1.x86_64.rpm && \
     rm redhat-internal-cert-install-0.1-29.el7.noarch.rpm  redhat-internal-NetworkManager-openvpn-profiles-0.1-62.el8.noarch.rpm && \
 	ostree container commit
