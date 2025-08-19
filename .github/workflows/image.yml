@@ -3,7 +3,7 @@ name: "Build a custom Fedora Atomic image"
 env:
   IMAGE_NAME: "fedora-atomic"
   REGISTRY: "quay.io/acardace"
-  IMAGE_TAG: "silverblue"
+  IMAGE_TAG: "kinoite"
 
 on:
   workflow_dispatch:
