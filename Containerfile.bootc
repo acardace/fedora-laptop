@@ -12,7 +12,7 @@ RUN dnf install -y 'dnf5-command(copr)' && \
 # Install packages
 RUN dnf install -y \
         @kde-desktop @kde-apps sddm \
-        korganizer kontact kgpg \
+        korganizer kontact \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
