@@ -46,13 +46,22 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install buildah
+      - name: Install and configure buildah
         run: |
           . /etc/os-release
           echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
           curl -fsSL "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
           sudo apt-get update -qq
           sudo apt-get install -y buildah
+
+          # Configure buildah to use vfs storage driver (emptyDir is overlayfs, can't stack overlay on overlay)
+          mkdir -p ~/.config/containers
+          cat > ~/.config/containers/storage.conf <<EOF
+          [storage]
+          driver = "vfs"
+          graphroot = "/home/runner/.local/share/containers/storage"
+          EOF
+
           buildah version
 
       - name: Build container image
