@@ -12,11 +12,13 @@ on:
       - main
     paths-ignore:
       - 'README.md'
+      - 'docs/**'
   push:
     branches:
       - main
     paths-ignore:
       - 'README.md'
+      - 'docs/**'
   schedule:
     - cron:  '0 0 * * 0'
 
