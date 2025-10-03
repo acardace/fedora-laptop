@@ -75,6 +75,8 @@ jobs:
           containerfiles: Containerfile.bootc
           layers: true
           oci: true
+          build-args: |
+            --isolation=chroot
 
       - name: Push to Quay.io
         uses: redhat-actions/push-to-registry@v2
