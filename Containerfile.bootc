@@ -1,0 +1,49 @@
+FROM quay.io/fedora/fedora-bootc:42
+
+LABEL quay.expires-after=8w
+
+# Copy local RPM packages
+COPY *.rpm .
+
+# Add third-party repositories
+RUN printf '[google-cloud-cli]\nname=Google Cloud CLI\nbaseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0\ngpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg\n' > /etc/yum.repos.d/google-cloud-sdk.repo && \
+    dnf install -y 'dnf5-command(copr)' && \
+    dnf copr enable -y karmab/kcli
+
+# Install packages
+RUN dnf install -y \
+        @kde-desktop @kde-apps sddm \
+        korganizer kontact kgpg \
+        distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
+        stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
+        libvirt virt-manager virt-install kcli nodejs-npm \
+        meld curl gh golang qrencode gopls \
+        restic rclone \
+        libxcrypt-compat.x86_64 google-cloud-cli \
+        *.rpm && \
+    rm *.rpm && \
+    dnf clean all
+
+# Install Claude Code
+RUN mkdir -p /var/roothome && \
+    npm install -g @anthropic-ai/claude-code
+
+# Configure system services
+RUN systemctl enable sddm libvirtd sshd
+
+# Setup restic backup system
+COPY restic-backup.sh /usr/local/bin/restic-backup.sh
+COPY restic-backup.service /etc/systemd/system/restic-backup.service
+COPY restic-backup.timer /etc/systemd/system/restic-backup.timer
+COPY restic-env.template /etc/restic/env.template
+
+RUN mkdir -p /etc/restic && \
+    chmod +x /usr/local/bin/restic-backup.sh && \
+    systemctl enable restic-backup.timer
+
+# Set default system configuration
+RUN ln -sf ../usr/share/zoneinfo/Europe/Rome /etc/localtime && \
+    printf 'LANG=en_US.UTF-8\n' > /etc/locale.conf && \
+    echo "work-laptop" > /etc/hostname && \
+    printf 'CHASSIS=laptop\n' > /etc/machine-info && \
+    echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
