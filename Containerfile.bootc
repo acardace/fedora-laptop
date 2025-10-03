@@ -6,8 +6,7 @@ LABEL quay.expires-after=8w
 COPY *.rpm .
 
 # Add third-party repositories
-RUN printf '[google-cloud-cli]\nname=Google Cloud CLI\nbaseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=0\ngpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg\n' > /etc/yum.repos.d/google-cloud-sdk.repo && \
-    dnf install -y 'dnf5-command(copr)' && \
+RUN dnf install -y 'dnf5-command(copr)' && \
     dnf copr enable -y karmab/kcli
 
 # Install packages
@@ -17,9 +16,8 @@ RUN dnf install -y \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
-        meld curl gh golang qrencode gopls \
+        meld curl gh qrencode \
         restic rclone \
-        libxcrypt-compat.x86_64 google-cloud-cli \
         *.rpm && \
     rm *.rpm && \
     dnf clean all
