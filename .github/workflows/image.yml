@@ -36,13 +36,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo docker system prune -af
+          df -h
+
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
           containerfiles: Containerfile.bootc
-          layers: false
+          layers: true
           oci: true
 
       - name: Push to Quay.io
