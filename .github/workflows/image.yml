@@ -46,41 +46,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install and configure buildah
-        run: |
-          . /etc/os-release
-          echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-          curl -fsSL "https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
-          sudo apt-get update -qq
-          sudo apt-get install -y buildah fuse-overlayfs
-
-          # Configure buildah to use overlay with fuse-overlayfs
-          mkdir -p ~/.config/containers
-          cat > ~/.config/containers/storage.conf <<EOF
-          [storage]
-          driver = "overlay"
-          graphroot = "/home/runner/.local/share/containers/storage"
-
-          [storage.options.overlay]
-          mount_program = "/usr/bin/fuse-overlayfs"
-          EOF
-
-          buildah version
-
       - name: Build container image
-        run: |
-          sudo buildah bud \
-            -f Containerfile.bootc \
-            --format oci \
-            --layers=true \
-            --isolation=chroot \
-            -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-            -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            .
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
+          containerfiles: Containerfile.bootc
+          layers: true
+          oci: true
 
       - name: Push to Quay.io
+        uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
-        run: |
-          echo "${{ secrets.BOT_PASSWORD }}" | sudo buildah login -u "${{ secrets.BOT_USERNAME }}" --password-stdin ${{ env.REGISTRY }}
-          sudo buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          sudo buildah push ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        with:
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_PASSWORD }}
+          image: ${{ env.IMAGE_NAME }}
+          registry: ${{ env.REGISTRY }}
+          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
