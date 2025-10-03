@@ -75,7 +75,7 @@ jobs:
           containerfiles: Containerfile.bootc
           layers: true
           oci: true
-          build-args: |
+          extra-args: |
             --isolation=chroot
 
       - name: Push to Quay.io
