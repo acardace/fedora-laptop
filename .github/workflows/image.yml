@@ -68,22 +68,19 @@ jobs:
           buildah version
 
       - name: Build container image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
-          containerfiles: Containerfile.bootc
-          layers: true
-          oci: true
-          extra-args: |
-            --isolation=chroot
+        run: |
+          sudo buildah bud \
+            -f Containerfile.bootc \
+            --format oci \
+            --layers=true \
+            --isolation=chroot \
+            -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            -t ${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            .
 
       - name: Push to Quay.io
-        uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
-        with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_PASSWORD }}
-          image: ${{ env.IMAGE_NAME }}
-          registry: ${{ env.REGISTRY }}
-          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
+        run: |
+          echo "${{ secrets.BOT_PASSWORD }}" | sudo buildah login -u "${{ secrets.BOT_USERNAME }}" --password-stdin ${{ env.REGISTRY }}
+          sudo buildah push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          sudo buildah push ${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
