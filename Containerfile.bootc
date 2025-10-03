@@ -28,22 +28,11 @@ RUN dnf install -y \
 RUN mkdir -p /var/roothome && \
     npm install -g @anthropic-ai/claude-code
 
-# Configure system services
-RUN systemctl enable sddm libvirtd sshd
+# Copy system configuration files
+COPY usr/ /usr/
+COPY etc/ /etc/
 
-# Setup restic backup system
-COPY restic-backup.sh /usr/local/bin/restic-backup.sh
-COPY restic-backup.service /etc/systemd/system/restic-backup.service
-COPY restic-backup.timer /etc/systemd/system/restic-backup.timer
-COPY restic-env.template /etc/restic/env.template
-
-RUN mkdir -p /etc/restic && \
-    chmod +x /usr/local/bin/restic-backup.sh && \
-    systemctl enable restic-backup.timer
-
-# Set default system configuration
-RUN ln -sf ../usr/share/zoneinfo/Europe/Rome /etc/localtime && \
-    printf 'LANG=en_US.UTF-8\n' > /etc/locale.conf && \
-    echo "work-laptop" > /etc/hostname && \
-    printf 'CHASSIS=laptop\n' > /etc/machine-info && \
+# Set executable permissions and configure timezone/sudoers
+RUN chmod +x /usr/local/bin/restic-backup.sh && \
+    ln -sf ../usr/share/zoneinfo/Europe/Rome /etc/localtime && \
     echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel

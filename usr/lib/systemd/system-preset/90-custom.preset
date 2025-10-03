@@ -1,0 +1,5 @@
+enable sddm.service
+enable libvirtd.service
+enable sshd.service
+enable bootloader-update.service
+enable restic-backup.timer
