@@ -10,15 +10,23 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
+    paths:
+      - 'Containerfile.bootc'
+      - 'config.toml'
+      - 'etc/**'
+      - 'usr/**'
+      - 'rpms/**'
+      - '.github/workflows/image.yml'
   push:
     branches:
       - main
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
+    paths:
+      - 'Containerfile.bootc'
+      - 'config.toml'
+      - 'etc/**'
+      - 'usr/**'
+      - 'rpms/**'
+      - '.github/workflows/image.yml'
   schedule:
     - cron:  '0 0 * * 0'
 

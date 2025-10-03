@@ -3,7 +3,7 @@ FROM quay.io/fedora/fedora-bootc:42
 LABEL quay.expires-after=8w
 
 # Copy local RPM packages
-COPY *.rpm .
+COPY rpms/*.rpm .
 
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
