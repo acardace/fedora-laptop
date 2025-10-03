@@ -6,10 +6,11 @@ This guide explains how to set up a development environment using Distrobox for 
 
 The main bootc image excludes certain development tools to reduce image size and build time:
 
-**Excluded packages (~520 MiB):**
+**Excluded packages (~600 MiB):**
 - `google-cloud-cli` (487 MiB) - Google Cloud SDK
 - `golang` (~24 MiB) - Go programming language
 - `gopls` (~8 MiB) - Go language server
+- `rust` + `cargo` (~80 MiB) - Rust programming language and package manager
 - `libxcrypt-compat` (~200 KiB) - Legacy crypt library
 
 These tools are installed in a Distrobox container instead, providing:
@@ -28,9 +29,19 @@ Run the automated setup script:
 ```
 
 This will:
-1. Create a Fedora 42 distrobox named `dev`
-2. Install golang, gopls, google-cloud-cli, and libxcrypt-compat
-3. Export common commands to the host (`go`, `gcloud`, `gsutil`, etc.)
+1. Create a Fedora 42 distrobox named `dev` (or update if it exists)
+2. Install golang, gopls, rust, cargo, google-cloud-cli, and libxcrypt-compat
+3. Export common commands to the host (`go`, `cargo`, `rustc`, `gcloud`, etc.)
+
+**The script is idempotent** - you can run it repeatedly to update packages. Use `--recreate` for a fresh start:
+
+```bash
+# Update packages in existing distrobox
+./scripts/setup-devbox.sh
+
+# Force recreation (clean slate)
+./scripts/setup-devbox.sh --recreate
+```
 
 ## Manual Setup
 
@@ -63,7 +74,7 @@ gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
 # Install development packages
-sudo dnf install -y golang gopls google-cloud-cli libxcrypt-compat.x86_64
+sudo dnf install -y golang gopls rust cargo google-cloud-cli libxcrypt-compat.x86_64
 ```
 
 ### Export Commands to Host
@@ -71,9 +82,18 @@ sudo dnf install -y golang gopls google-cloud-cli libxcrypt-compat.x86_64
 While inside the container, export commands:
 
 ```bash
+# Go tools
 distrobox-export --bin /usr/bin/go
 distrobox-export --bin /usr/bin/gofmt
 distrobox-export --bin /usr/bin/gopls
+
+# Rust tools
+distrobox-export --bin /usr/bin/cargo
+distrobox-export --bin /usr/bin/rustc
+distrobox-export --bin /usr/bin/rustfmt
+distrobox-export --bin /usr/bin/rust-analyzer
+
+# Google Cloud tools
 distrobox-export --bin /usr/bin/gcloud
 distrobox-export --bin /usr/bin/gsutil
 distrobox-export --bin /usr/bin/bq
@@ -93,8 +113,9 @@ After export, commands work directly from your host shell:
 ```bash
 # These run inside the distrobox but feel like native commands
 go version
+cargo --version
+rustc --version
 gcloud --version
-gopls version
 ```
 
 Exported binaries are located in `~/.local/bin/` (automatically in your PATH).
@@ -128,6 +149,26 @@ go mod init example.com/myproject
 # Build and run
 go build
 ./myproject
+```
+
+### Working with Rust
+
+Rust development works transparently:
+
+```bash
+# Create a new Rust project
+cargo new myproject
+cd myproject
+
+# Build and run
+cargo build
+cargo run
+
+# Use rust-analyzer with your editor
+# The LSP will find rust-analyzer automatically
+
+# Add dependencies
+cargo add serde
 ```
 
 ### Working with Google Cloud
@@ -205,6 +246,14 @@ Since commands are exported to your host PATH, most extensions work automaticall
 }
 ```
 
+**Rust Analyzer extension:**
+```json
+{
+  "rust-analyzer.server.path": "rust-analyzer"
+}
+```
+The extension will automatically use the exported `rust-analyzer` command.
+
 **Google Cloud Code:**
 - Works with exported `gcloud` command
 - Configure project in extension settings
@@ -214,10 +263,14 @@ Since commands are exported to your host PATH, most extensions work automaticall
 For LSP configuration (e.g., with nvim-lspconfig):
 
 ```lua
+-- Go
 require'lspconfig'.gopls.setup{}
+
+-- Rust
+require'lspconfig'.rust_analyzer.setup{}
 ```
 
-Since `gopls` is in your PATH via export, it works automatically.
+Since `gopls` and `rust-analyzer` are in your PATH via export, they work automatically.
 
 ## Advanced Tips
 
