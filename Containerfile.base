@@ -1,0 +1,23 @@
+FROM quay.io/fedora/fedora-bootc:42
+
+LABEL quay.expires-after=8w
+
+# Copy local RPM packages
+COPY rpms/*.rpm .
+
+# Add third-party repositories
+RUN dnf install -y 'dnf5-command(copr)' && \
+    dnf copr enable -y karmab/kcli
+
+# Install packages
+RUN dnf install -y \
+        @kde-desktop @kde-apps sddm \
+        korganizer kontact \
+        distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
+        stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
+        libvirt virt-manager virt-install kcli nodejs-npm \
+        meld curl gh qrencode \
+        restic rclone \
+        *.rpm && \
+    rm *.rpm && \
+    dnf clean all

@@ -11,6 +11,7 @@ on:
     branches:
       - main
     paths:
+      - 'Containerfile.base'
       - 'Containerfile.bootc'
       - 'config.toml'
       - 'etc/**'
@@ -21,6 +22,7 @@ on:
     branches:
       - main
     paths:
+      - 'Containerfile.base'
       - 'Containerfile.bootc'
       - 'config.toml'
       - 'etc/**'
@@ -40,13 +42,39 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build-push-image:
-    runs-on: [self-hosted, buildah]
+  build-push-base-image:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Build container image
+      - name: Build base container image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: base
+          containerfiles: Containerfile.base
+          layers: true
+          oci: true
+
+      - name: Push base image to Quay.io
+        uses: redhat-actions/push-to-registry@v2
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
+        with:
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_PASSWORD }}
+          image: ${{ env.IMAGE_NAME }}
+          registry: ${{ env.REGISTRY }}
+          tags: base
+
+  build-push-final-image:
+    runs-on: ubuntu-latest
+    needs: build-push-base-image
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build final container image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
@@ -55,7 +83,7 @@ jobs:
           layers: true
           oci: true
 
-      - name: Push to Quay.io
+      - name: Push final image to Quay.io
         uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
