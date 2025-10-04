@@ -16,6 +16,9 @@ RUN dnf install -y \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
+        linux-firmware linux-firmware-whence alsa-sof-firmware intel-audio-firmware realtek-firmware \
+        iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
+        intel-gmmlib intel-gpu-firmware intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
         meld curl gh qrencode \
         restic rclone \
         *.rpm && \
