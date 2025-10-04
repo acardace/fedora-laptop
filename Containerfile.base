@@ -21,4 +21,5 @@ RUN dnf install -y \
         *.rpm && \
     rm *.rpm && \
     dnf clean all && \
-    systemd-sysusers
+    systemd-sysusers && \
+    systemd-tmpfiles --create
