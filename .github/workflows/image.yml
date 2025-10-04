@@ -88,7 +88,7 @@ jobs:
       - name: Log in to Red Hat Registry
         uses: redhat-actions/podman-login@v1
         with:
-          registry: registry.redhat.io
+          registry: quay.io
           username: ${{ secrets.BOT_USERNAME }}
           password: ${{ secrets.BOT_PASSWORD }}
 
