@@ -85,11 +85,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Log in to Red Hat Registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: registry.redhat.io
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_PASSWORD }}
+
       - name: Build final container image
         uses: redhat-actions/buildah-build@v2
         with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_PASSWORD }}
           image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
           containerfiles: Containerfile.bootc
