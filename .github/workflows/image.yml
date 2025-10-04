@@ -88,6 +88,8 @@ jobs:
       - name: Build final container image
         uses: redhat-actions/buildah-build@v2
         with:
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_PASSWORD }}
           image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
           containerfiles: Containerfile.bootc
