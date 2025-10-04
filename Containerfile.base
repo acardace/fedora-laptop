@@ -20,4 +20,5 @@ RUN dnf install -y \
         restic rclone \
         *.rpm && \
     rm *.rpm && \
-    dnf clean all
+    dnf clean all && \
+    systemd-sysusers
