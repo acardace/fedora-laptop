@@ -20,7 +20,7 @@ RUN dnf install -y \
         iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
         intel-gmmlib intel-gpu-firmware intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth \
-        meld curl gh qrencode \
+        meld curl gh qrencode simdjson \
         restic rclone \
         *.rpm && \
     rm *.rpm && \
