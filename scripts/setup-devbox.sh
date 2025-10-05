@@ -8,6 +8,21 @@ DISTROBOX_NAME="dev"
 DISTROBOX_IMAGE="fedora:42"
 RECREATE=false
 
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGES_FILE="${SCRIPT_DIR}/distrobox-packages.txt"
+EXPORTS_FILE="${SCRIPT_DIR}/distrobox-exports.txt"
+
+# Function to read config file (ignoring comments and empty lines)
+read_config_file() {
+    local file="$1"
+    if [[ ! -f "$file" ]]; then
+        echo "Error: Config file not found: $file" >&2
+        exit 1
+    fi
+    grep -v '^\s*#' "$file" | grep -v '^\s*$' | sed 's/^\s*//' | sed 's/\s*$//'
+}
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -72,11 +87,16 @@ fi
 
 echo "Installing/updating development packages in distrobox..."
 
+# Read packages from config file
+PACKAGES=$(read_config_file "$PACKAGES_FILE" | tr '\n' ' ')
+echo "Packages to install: $PACKAGES"
+echo
+
 # Install packages inside the distrobox
-distrobox enter "${DISTROBOX_NAME}" -- bash -c '
+distrobox enter "${DISTROBOX_NAME}" -- bash -c "
 set -euo pipefail
 
-echo "Adding Google Cloud CLI repository..."
+echo 'Adding Google Cloud CLI repository...'
 sudo tee /etc/yum.repos.d/google-cloud-sdk.repo > /dev/null << EOF
 [google-cloud-cli]
 name=Google Cloud CLI
@@ -87,37 +107,20 @@ repo_gpgcheck=0
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
-echo "Installing packages..."
-sudo dnf install -y \
-    golang \
-    gopls \
-    rust \
-    cargo \
-    google-cloud-cli \
-    libxcrypt-compat.x86_64
+echo 'Installing packages...'
+sudo dnf install -y $PACKAGES
 
-echo "Development packages installed successfully!"
-'
+echo 'Development packages installed successfully!'
+"
 
 echo
 echo "Exporting commands to host..."
 
-# Export useful commands to the host (exports are idempotent)
-# Go tools
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/go --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/gofmt --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/gopls --export-path ~/.local/bin 2>/dev/null || true
-
-# Rust tools
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/cargo --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/rustc --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/rustfmt --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/rust-analyzer --export-path ~/.local/bin 2>/dev/null || true
-
-# Google Cloud tools
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/gcloud --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/gsutil --export-path ~/.local/bin 2>/dev/null || true
-distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin /usr/bin/bq --export-path ~/.local/bin 2>/dev/null || true
+# Export binaries to the host (exports are idempotent)
+while IFS= read -r binary; do
+    echo "Exporting: $binary"
+    distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin "$binary" --export-path ~/.local/bin 2>/dev/null || true
+done < <(read_config_file "$EXPORTS_FILE")
 
 echo
 echo "✓ Development distrobox setup complete!"
@@ -128,6 +131,10 @@ echo "  - Run Go from host:       go version"
 echo "  - Run Rust from host:     cargo --version"
 echo "  - Run gcloud from host:   gcloud --version"
 echo "  - List exported apps:     ls ~/.local/bin/"
+echo
+echo "Configuration:"
+echo "  - Packages:               ${PACKAGES_FILE}"
+echo "  - Exports:                ${EXPORTS_FILE}"
 echo
 echo "Exported commands are available in your PATH (~/.local/bin)"
 echo
