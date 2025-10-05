@@ -26,3 +26,7 @@ RUN dnf install -y \
         *.rpm && \
     rm *.rpm && \
     dnf clean all
+
+# Remove packages
+RUN dnf remove -y plasma-discover-packagekit && \
+    dnf clean all
