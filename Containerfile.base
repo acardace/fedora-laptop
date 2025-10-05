@@ -11,7 +11,7 @@ RUN dnf install -y 'dnf5-command(copr)' && \
 
 # Install packages
 RUN dnf install -y \
-        @kde-desktop @kde-apps sddm \
+        @kde-desktop @kde-apps sddm plymouth \
         korganizer kontact \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
@@ -19,10 +19,9 @@ RUN dnf install -y \
         linux-firmware linux-firmware-whence alsa-sof-firmware intel-audio-firmware realtek-firmware \
         iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
         intel-gmmlib intel-gpu-firmware intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
+        NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth \
         meld curl gh qrencode \
         restic rclone \
         *.rpm && \
     rm *.rpm && \
-    dnf clean all && \
-    systemd-sysusers && \
-    systemd-tmpfiles --create
+    dnf clean all
