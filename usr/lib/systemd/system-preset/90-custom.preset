@@ -3,7 +3,3 @@ enable libvirtd.service
 enable sshd.service
 enable bootloader-update.service
 enable restic-backup.timer
-
-# Mask systemd-remount-fs to avoid composefs/overlay remount issues
-# See: https://github.com/ostreedev/ostree/issues/3193
-mask systemd-remount-fs.service
