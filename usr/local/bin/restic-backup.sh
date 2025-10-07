@@ -50,6 +50,7 @@ done
 # Perform backup
 echo "Starting backup to $RESTIC_REPO..."
 restic -r "$RESTIC_REPO" backup $BACKUP_PATHS "${EXCLUDE_ARGS[@]}" \
+    -vv \
     --tag "automated" \
     --tag "$(hostname)"
 
