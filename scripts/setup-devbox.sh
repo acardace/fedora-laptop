@@ -5,7 +5,7 @@ set -euo pipefail
 # This creates a containerized development environment with Go, Rust, and Google Cloud CLI
 
 DISTROBOX_NAME="dev"
-DISTROBOX_IMAGE="fedora:42"
+DISTROBOX_IMAGE="fedora:43"
 RECREATE=false
 
 # Get the directory where this script is located

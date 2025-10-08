@@ -10,6 +10,7 @@ trap 'echo "Backup interrupted at $(date)" >&2' EXIT TERM INT
 RESTIC_REPO="rclone:gdrive:laptop-backup"
 BACKUP_PATHS="/home /etc /var /opt"
 EXCLUDE_PATTERNS=(
+    "/var/home/acardace/.local/share/containers"
     "/var/cache"
     "/var/tmp"
     "/var/log"
