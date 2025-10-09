@@ -13,4 +13,6 @@ COPY etc/ /etc/
 # Set executable permissions and configure timezone/sudoers
 RUN chmod +x /usr/local/bin/restic-backup.sh && \
     ln -sf ../usr/share/zoneinfo/Europe/Rome /etc/localtime && \
-    echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
+    echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel && \
+    systemctl preset-all \
+
