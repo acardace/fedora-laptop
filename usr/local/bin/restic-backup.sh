@@ -11,6 +11,7 @@ RESTIC_REPO="rclone:gdrive:laptop-backup"
 BACKUP_PATHS="/home /etc /var /opt"
 EXCLUDE_PATTERNS=(
     "/var/home/acardace/.local/share/containers"
+    "/var/lib/containers"
     "/var/cache"
     "/var/tmp"
     "/var/log"
