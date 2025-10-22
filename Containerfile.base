@@ -7,9 +7,7 @@ COPY rpms/*.rpm .
 
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
-    dnf copr enable -y karmab/kcli && \
-    dnf install -y fedora-workstation-repositories && \
-    dnf config-manager setopt google-chrome.enabled=1
+    dnf copr enable -y karmab/kcli
 
 # Install packages
 RUN dnf install -y \
@@ -25,7 +23,7 @@ RUN dnf install -y \
         meld curl gh qrencode yq jq \
         restic rclone \
         alsa-ucm alsa-utils krb5-workstation \
-        google-chrome-stable firefox chromium && \
+        firefox chromium && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
