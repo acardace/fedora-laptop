@@ -22,7 +22,7 @@ RUN dnf install -y \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth \
         meld curl gh qrencode yq jq \
         restic rclone \
-        alsa-ucm alsa-utils && \
+        alsa-ucm alsa-utils krb5-workstation && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
