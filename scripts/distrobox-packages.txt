@@ -22,6 +22,7 @@ gopls
 # Rust development
 rust
 cargo
+rust-analyzer
 
 # Google Cloud CLI
 google-cloud-cli
