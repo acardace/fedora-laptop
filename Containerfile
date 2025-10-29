@@ -1,6 +1,6 @@
 FROM quay.io/fedora/fedora-bootc:43
 
-LABEL quay.expires-after=8w
+LABEL quay.expires-after=12w
 
 # Copy local RPM packages
 COPY rpms/*.rpm .
@@ -20,7 +20,7 @@ RUN dnf install -y \
         SwayNotificationCenter pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland \
         dolphin sddm okular gwenview \
-        glibc-langpack-en wofi \
+        glibc-langpack-en kitty \
         flatpak btop bc pamixer playerctl \
         network-manager-applet blueman waybar swww  \
         rofi udiskie pavucontrol brightnessctl flatseal \
@@ -38,3 +38,15 @@ RUN dnf install -y \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
+
+# Install Claude Code
+RUN mkdir -p /var/roothome && \
+    npm install -g @anthropic-ai/claude-code
+
+# Copy system configuration files
+COPY rootfs/ /
+
+# Set executable permissions and configure timezone/sudoers
+RUN ln -sf ../usr/share/zoneinfo/Europe/Rome /etc/localtime && \
+    echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel && \
+    systemctl preset-all \

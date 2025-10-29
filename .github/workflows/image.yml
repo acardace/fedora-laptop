@@ -11,8 +11,7 @@ on:
     branches:
       - main
     paths:
-      - 'Containerfile.base'
-      - 'Containerfile.bootc'
+      - 'Containerfile'
       - 'config.toml'
       - 'etc/**'
       - 'usr/**'
@@ -22,8 +21,7 @@ on:
     branches:
       - main
     paths:
-      - 'Containerfile.base'
-      - 'Containerfile.bootc'
+      - 'Containerfile'
       - 'config.toml'
       - 'etc/**'
       - 'usr/**'
@@ -42,7 +40,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build-push-base-image:
+  build-push-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -59,49 +57,16 @@ jobs:
       #     docker-images: true
       #     swap-storage: true
 
-      - name: Build base container image
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: base
-          containerfiles: Containerfile.base
-          layers: true
-          oci: true
-
-      - name: Push base image to Quay.io
-        uses: redhat-actions/push-to-registry@v2
-        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
-        with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_PASSWORD }}
-          image: ${{ env.IMAGE_NAME }}
-          registry: ${{ env.REGISTRY }}
-          tags: base
-
-  build-push-final-image:
-    runs-on: ubuntu-latest
-    needs: build-push-base-image
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Log in to Red Hat Registry
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: quay.io
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_PASSWORD }}
-
-      - name: Build final container image
+      - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
-          containerfiles: Containerfile.bootc
+          containerfiles: Containerfile
           layers: true
           oci: true
 
-      - name: Push final image to Quay.io
+      - name: Push base image to Quay.io
         uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
