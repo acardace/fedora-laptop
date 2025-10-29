@@ -3,3 +3,4 @@ enable libvirtd.service
 enable sshd.service
 enable bootloader-update.service
 enable restic-backup.timer
+disable gssproxy.service
