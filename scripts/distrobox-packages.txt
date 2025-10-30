@@ -16,6 +16,8 @@ stow
 fd-find
 clang-devel
 make
+jq
+yq
 
 # Go development
 golang
