@@ -20,7 +20,7 @@ RUN dnf install -y \
         SwayNotificationCenter pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland \
         dolphin sddm okular gwenview \
-        glibc-langpack-en kitty \
+        glibc-langpack-en kubectl make gcc tree \
         flatpak btop bc pamixer playerctl \
         network-manager-applet blueman waybar swww  \
         rofi udiskie pavucontrol brightnessctl flatseal \
