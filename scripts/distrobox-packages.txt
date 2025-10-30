@@ -15,6 +15,7 @@ fzf
 stow
 fd-find
 clang-devel
+make
 
 # Go development
 golang
