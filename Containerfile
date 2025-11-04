@@ -22,6 +22,7 @@ RUN dnf install -y \
         dolphin sddm okular gwenview \
         glibc-langpack-en kubectl make gcc tree \
         flatpak btop bc pamixer playerctl \
+        ramalama \
         network-manager-applet blueman waybar swww  \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
