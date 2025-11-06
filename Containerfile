@@ -35,7 +35,7 @@ RUN dnf install -y \
         meld curl gh qrencode yq jq \
         restic rclone \
         alsa-ucm alsa-utils krb5-workstation \
-        firefox chromium && \
+        firefox chromium proton-vpn-gnome-desktop && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
