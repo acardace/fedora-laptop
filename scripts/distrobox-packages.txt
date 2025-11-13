@@ -18,6 +18,10 @@ clang-devel
 make
 jq
 yq
+podman-remote
+ffmpeg
+meld
+poppler-utils
 
 # Go development
 golang
