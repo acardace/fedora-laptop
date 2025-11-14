@@ -20,22 +20,21 @@ RUN dnf install -y \
         SwayNotificationCenter pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland \
         dolphin sddm okular gwenview \
-        glibc-langpack-en kubectl make gcc tree \
+        glibc-langpack-en kubectl \
         flatpak btop bc pamixer playerctl \
         ramalama \
         network-manager-applet blueman waybar swww  \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
-        stow fd-find wireguard-tools tmux NetworkManager-openvpn alacritty \
+        stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
         linux-firmware linux-firmware-whence alsa-sof-firmware intel-audio-firmware realtek-firmware \
         iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
         intel-gmmlib intel-gpu-firmware intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
-        NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth \
-        meld curl gh qrencode yq jq \
+        NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone \
         alsa-ucm alsa-utils krb5-workstation \
-        firefox chromium proton-vpn-gnome-desktop && \
+        firefox chromium && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
