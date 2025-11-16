@@ -9,7 +9,7 @@ COPY rpms/*.rpm .
 RUN dnf install -y 'dnf5-command(copr)' && \
     dnf copr enable -y karmab/kcli && \
     dnf copr enable -y solopasha/hyprland && \
-    dnf copr enable -y erikreider/SwayNotificationCenter
+    dnf copr enable -y washkinazy/wayland-wm-extras
 
 # Install packages
 RUN dnf install -y \
@@ -17,13 +17,12 @@ RUN dnf install -y \
         hyprlock hyprpolkitagent xdg-desktop-portal-hyprland \
         hyprsysteminfo hyprland-autoname-workspaces \
         hyprland-plugins hyprland-contrib hyprqt6engine \
-        SwayNotificationCenter pipewire wireplumber \
+        pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland \
         dolphin sddm okular gwenview \
         glibc-langpack-en kubectl \
-        flatpak btop bc pamixer playerctl \
-        ramalama \
-        network-manager-applet blueman waybar swww  \
+        flatpak btop bc pamixer playerctl elephant swayosd walker \
+        network-manager-applet blueman waybar swww protonvpn-cli  \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
