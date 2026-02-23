@@ -2,8 +2,8 @@ name: "Build a custom Fedora bootc image"
 
 env:
   IMAGE_NAME: "fedora-laptop"
-  REGISTRY: "quay.io/acardace"
-  IMAGE_TAG: "latest"
+  REGISTRY: "ghcr.io/acardace"
+  IMAGE_TAG: "hyprland"
 
 on:
   workflow_dispatch:
@@ -30,7 +30,9 @@ on:
   schedule:
     - cron:  '0 0 * * 0'
 
-permissions: read-all
+permissions:
+  contents: read
+  packages: write
 
 # Prevent multiple workflow runs from racing to ensure that pushes are made
 # sequentialy for the main branch. Also cancel in progress workflow runs for
@@ -66,12 +68,18 @@ jobs:
           layers: true
           oci: true
 
-      - name: Push base image to Quay.io
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push base image to GHCR
         uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_PASSWORD }}
           image: ${{ env.IMAGE_NAME }}
           registry: ${{ env.REGISTRY }}
           tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}

@@ -1,6 +1,4 @@
-FROM quay.io/fedora/fedora-bootc:43
-
-LABEL quay.expires-after=12w
+FROM quay.io/fedora/fedora-bootc:latest
 
 # Copy local RPM packages
 COPY rpms/*.rpm .
