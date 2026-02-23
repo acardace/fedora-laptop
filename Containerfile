@@ -46,7 +46,7 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
     fi
 
 # Install OpenCode
-RUN dnf install -y https://opencode.ai/download/stable/linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/x64/')-rpm && \
+RUN dnf install -y https://github.com/anomalyco/opencode/releases/latest/download/opencode-desktop-linux-$(uname -m).rpm && \
     dnf clean all
 
 # Copy system configuration files
