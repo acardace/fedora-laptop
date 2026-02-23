@@ -1,0 +1,5 @@
+[[customizations.user]]
+name = "acardace"
+password = "$6$A6rc9m6f/aacBkAe$3Jnmlfb0YZsmWgZCcXyV/iaMgtmhRDZoSJeNwpG2gukEujBZ/NtAsOB4sHCbgGPJERa9HhW.B6uviTYNFUWB//"
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOeHlYMy97S9KKda5QdORi6wujhntAoFXIbfrF+rn9CK antonio@mushu"
+groups = ["wheel", "libvirt"]
