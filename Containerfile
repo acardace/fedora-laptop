@@ -23,19 +23,24 @@ RUN dnf install -y \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
-        linux-firmware linux-firmware-whence alsa-sof-firmware intel-audio-firmware realtek-firmware \
-        iwlwifi-dvm-firmware iwlwifi-mvm-firmware \
+        linux-firmware linux-firmware-whence alsa-sof-firmware realtek-firmware \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone \
         alsa-ucm alsa-utils krb5-workstation \
         firefox chromium xdg-terminal-exec && \
-    if [ "$(uname -m)" = "x86_64" ]; then \
-        dnf install -y libva-intel-media-driver intel-gmmlib intel-gpu-firmware \
-            intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware; \
-    fi && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
+
+# Install x86_64-only packages (Intel firmware and drivers)
+RUN if [ "$(uname -m)" = "x86_64" ]; then \
+        dnf install -y \
+            intel-audio-firmware intel-gmmlib intel-gpu-firmware \
+            intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
+            iwlwifi-dvm-firmware iwlwifi-mvm-firmware \
+            libva-intel-media-driver && \
+        dnf clean all; \
+    fi
 
 # Install Claude Code
 RUN mkdir -p /var/roothome && \
