@@ -1,29 +1,25 @@
-FROM quay.io/fedora/fedora-bootc:43
-
-LABEL quay.expires-after=12w
+FROM quay.io/fedora/fedora-bootc:latest
 
 # Copy local RPM packages
 COPY rpms/*.rpm .
 
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
-    dnf copr enable -y karmab/kcli && \
-    dnf copr enable -y solopasha/hyprland && \
-    dnf copr enable -y washkinazy/wayland-wm-extras
+    dnf copr enable -y karmab/kcli
 
 # Install packages
 RUN dnf install -y \
-        hyprland hypridle hyprshot hyprpanel hyprsunset \
-        hyprlock hyprpolkitagent xdg-desktop-portal-hyprland \
-        hyprsysteminfo hyprland-autoname-workspaces \
-        hyprland-plugins hyprland-contrib hyprqt6engine \
+        plasma-desktop plasma-workspace plasma-nm plasma-pa \
+        plasma-systemmonitor plasma-disks plasma-thunderbolt \
+        plasma-login-manager xdg-desktop-portal-kde \
+        kde-gtk-config kdeplasma-addons kscreen kinfocenter \
+        bluedevil powerdevil \
         pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland \
-        dolphin sddm okular gwenview \
+        dolphin okular gwenview konsole spectacle \
         glibc-langpack-en kubectl \
-        flatpak btop bc pamixer playerctl elephant swayosd walker \
-        network-manager-applet blueman waybar swww protonvpn-cli  \
-        rofi udiskie pavucontrol brightnessctl flatseal \
+        flatpak btop bc pamixer playerctl protonvpn-cli \
+        pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
         libvirt virt-manager virt-install kcli nodejs-npm \
@@ -33,7 +29,7 @@ RUN dnf install -y \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone \
         alsa-ucm alsa-utils krb5-workstation \
-        firefox chromium xdg-terminal-exec wiremix mako && \
+        firefox chromium xdg-terminal-exec && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
