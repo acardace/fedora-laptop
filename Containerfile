@@ -23,7 +23,7 @@ RUN dnf install -y \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
         stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
-        libvirt virt-manager virt-install kcli nodejs-npm \
+        libvirt virt-manager virt-install kcli \
         linux-firmware linux-firmware-whence alsa-sof-firmware realtek-firmware \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone \
@@ -45,9 +45,9 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
         dnf clean all; \
     fi
 
-# Install Claude Code
-RUN mkdir -p /var/roothome && \
-    npm install -g @anthropic-ai/claude-code
+# Install OpenCode
+RUN dnf install -y https://opencode.ai/download/stable/linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/x64/')-rpm && \
+    dnf clean all
 
 # Copy system configuration files
 COPY rootfs/ /
