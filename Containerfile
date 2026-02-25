@@ -19,6 +19,7 @@ RUN dnf install -y \
         qt5-qtwayland qt6-qtwayland \
         dolphin sddm okular gwenview \
         glibc-langpack-en kubectl \
+        meld gh jq yq \
         flatpak btop bc pamixer playerctl elephant swayosd walker \
         network-manager-applet blueman waybar swww protonvpn-cli \
         rofi udiskie pavucontrol brightnessctl flatseal \
