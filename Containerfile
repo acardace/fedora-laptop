@@ -23,7 +23,7 @@ RUN dnf install -y \
         network-manager-applet blueman waybar swww protonvpn-cli \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
-        stow fd-find wireguard-tools NetworkManager-openvpn alacritty \
+        stow fd-find wireguard-tools NetworkManager-openvpn alacritty kitty \
         libvirt virt-manager virt-install kcli \
         linux-firmware linux-firmware-whence alsa-sof-firmware realtek-firmware \
         intel-audio-firmware intel-gmmlib intel-gpu-firmware \
