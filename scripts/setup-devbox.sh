@@ -116,11 +116,15 @@ echo 'Development packages installed successfully!'
 echo
 echo "Exporting commands to host..."
 
-# Export binaries to the host (exports are idempotent)
+# Build a single script that exports all binaries in one distrobox session
+EXPORT_SCRIPT=""
 while IFS= read -r binary; do
-    echo "Exporting: $binary"
-    distrobox enter "${DISTROBOX_NAME}" -- distrobox-export --bin "$binary" --export-path ~/.local/bin 2>/dev/null || true
+    echo "Will export: $binary"
+    EXPORT_SCRIPT+="distrobox-export --bin ${binary} --export-path ~/.local/bin || echo 'Warning: failed to export ${binary}';"
 done < <(read_config_file "$EXPORTS_FILE")
+
+# Run all exports in a single distrobox enter session
+distrobox enter "${DISTROBOX_NAME}" -- bash -c "${EXPORT_SCRIPT}"
 
 echo
 echo "✓ Development distrobox setup complete!"

@@ -32,6 +32,7 @@ gopls
 rust
 cargo
 rust-analyzer
+rustfmt
 
 # Google Cloud CLI
 google-cloud-cli
