@@ -16,3 +16,4 @@
 
 # Google Cloud tools
 /usr/bin/gcloud
+/usr/bin/uvx
