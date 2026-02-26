@@ -16,8 +16,10 @@ RUN dnf install -y \
         hyprsysteminfo hyprland-autoname-workspaces \
         hyprland-plugins hyprland-contrib hyprqt6engine \
         pipewire wireplumber \
-        qt5-qtwayland qt6-qtwayland \
-        dolphin sddm okular gwenview \
+        qt5-qtwayland qt6-qtwayland qt5ct qt6ct \
+        breeze-icon-theme breeze-cursor-theme plasma-breeze \
+        xdg-desktop-portal-kde kio-extras kde-settings ark \
+        dolphin sddm sddm-breeze okular gwenview \
         glibc-langpack-en kubectl \
         meld gh jq yq tmux \
         flatpak btop bc pamixer playerctl elephant swayosd walker \
