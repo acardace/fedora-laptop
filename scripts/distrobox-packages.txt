@@ -22,6 +22,7 @@ podman-remote
 ffmpeg
 meld
 poppler-utils
+tmux
 
 # Go development
 golang
