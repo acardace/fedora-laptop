@@ -33,7 +33,7 @@ RUN dnf install -y \
         intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
         iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
-        restic rclone fprintd fprintd-pam \
+        restic rclone fprintd fprintd-pam pinentry-qt \
         alsa-ucm alsa-utils krb5-workstation \
         firefox chromium xdg-terminal-exec wiremix mako && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
