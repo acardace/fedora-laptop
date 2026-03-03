@@ -21,7 +21,7 @@ RUN dnf install -y \
         xdg-desktop-portal-kde kio-extras kde-settings ark \
         dolphin sddm sddm-breeze okular gwenview \
         glibc-langpack-en kubectl \
-        meld gh jq yq tmux \
+        meld gh jq yq tmux kde-connect \
         flatpak btop bc pamixer playerctl elephant swayosd walker \
         network-manager-applet blueman waybar swww protonvpn-cli \
         rofi udiskie pavucontrol brightnessctl flatseal \
