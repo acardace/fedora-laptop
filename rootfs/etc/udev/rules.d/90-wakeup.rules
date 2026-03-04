@@ -1,0 +1,8 @@
+# Enable wakeup from suspend via USB devices (keyboard/mouse)
+# Enable xHCI host controller wakeup
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="1d6b", ATTR{idProduct}=="0002", ATTR{power/wakeup}="enabled"
+# Enable USB hub wakeup
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0552", ATTR{idProduct}=="1110", ATTR{power/wakeup}="enabled"
+
+# Enable wakeup from ACPI sleep button
+ACTION=="add", SUBSYSTEM=="platform", ATTR{power/wakeup}=="disabled", ATTRS{hid}=="PNP0C0E", ATTR{power/wakeup}="enabled"
