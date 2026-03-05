@@ -11,7 +11,7 @@ RUN dnf install -y 'dnf5-command(copr)' && \
 
 # Install packages
 RUN dnf install -y \
-        hyprland hypridle hyprshot hyprpanel hyprsunset \
+        hyprland hypridle hyprshot hyprpanel hyprsunset hyprprop \
         hyprlock hyprpolkitagent xdg-desktop-portal-hyprland \
         hyprsysteminfo hyprland-autoname-workspaces \
         hyprland-plugins hyprland-contrib hyprqt6engine \
