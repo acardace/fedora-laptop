@@ -35,7 +35,7 @@ RUN dnf install -y \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone fprintd fprintd-pam pinentry-qt \
         alsa-ucm alsa-utils krb5-workstation \
-        firefox chromium xdg-terminal-exec wiremix mako && \
+        firefox chromium xdg-terminal-exec wiremix mako cups && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
