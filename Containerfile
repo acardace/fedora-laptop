@@ -3,6 +3,9 @@ FROM quay.io/fedora/fedora-bootc:latest
 # Copy local RPM packages
 COPY rpms/*.rpm .
 
+# Add NetBird repository
+COPY rootfs/etc/yum.repos.d/netbird.repo /etc/yum.repos.d/netbird.repo
+
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
     dnf copr enable -y karmab/kcli && \
@@ -10,10 +13,10 @@ RUN dnf install -y 'dnf5-command(copr)' && \
     dnf copr enable -y washkinazy/wayland-wm-extras
 
 # Install packages
-RUN dnf install -y \
+RUN dnf install -y --setopt=tsflags=noscripts \
         hyprland hypridle hyprshot hyprpanel hyprsunset hyprprop \
         hyprlock hyprpolkitagent xdg-desktop-portal-hyprland \
-        hyprsysteminfo hyprland-autoname-workspaces \
+        hyprland-autoname-workspaces \
         hyprland-plugins hyprland-contrib hyprqt6engine \
         pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland qt5ct qt6ct \
@@ -35,7 +38,8 @@ RUN dnf install -y \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
         restic rclone fprintd fprintd-pam pinentry-qt \
         alsa-ucm alsa-utils krb5-workstation \
-        firefox chromium xdg-terminal-exec wiremix mako cups waydroid && \
+        firefox chromium xdg-terminal-exec wiremix mako cups waydroid \
+        netbird netbird-ui && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
