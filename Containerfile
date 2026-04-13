@@ -8,7 +8,6 @@ COPY rootfs/etc/yum.repos.d/netbird.repo /etc/yum.repos.d/netbird.repo
 
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
-    dnf copr enable -y karmab/kcli && \
     dnf copr enable -y solopasha/hyprland && \
     dnf copr enable -y washkinazy/wayland-wm-extras
 
@@ -23,20 +22,20 @@ RUN dnf install -y --setopt=tsflags=noscripts \
         breeze-icon-theme breeze-cursor-theme plasma-breeze \
         xdg-desktop-portal-kde kio-extras kde-settings ark \
         dolphin sddm sddm-breeze okular gwenview \
-        glibc-langpack-en kubectl \
-        meld gh jq yq tmux kde-connect \
-        flatpak btop bc pamixer playerctl elephant swayosd walker \
+        glibc-langpack-en \
+        kde-connect \
+        flatpak btop pamixer playerctl elephant swayosd walker \
         network-manager-applet blueman waybar swww protonvpn-cli \
         rofi udiskie pavucontrol brightnessctl flatseal \
-        distrobox tailscale fastfetch neovim git buildah fish fzf ripgrep bat \
-        stow fd-find wireguard-tools NetworkManager-openvpn alacritty kitty \
-        libvirt virt-manager virt-install kcli \
+        distrobox tailscale fastfetch neovim git fish fzf ripgrep bat \
+        wireguard-tools NetworkManager-openvpn alacritty kitty \
+        libvirt virt-manager virt-install \
         linux-firmware linux-firmware-whence alsa-sof-firmware realtek-firmware \
         intel-audio-firmware intel-gmmlib intel-gpu-firmware \
         intel-mediasdk intel-vpl-gpu-rt intel-vsc-firmware \
         iwlwifi-dvm-firmware iwlwifi-mvm-firmware libva-intel-media-driver \
         NetworkManager-wifi NetworkManager-wwan NetworkManager-bluetooth curl \
-        restic rclone fprintd fprintd-pam pinentry-qt \
+        fprintd fprintd-pam pinentry-qt \
         alsa-ucm alsa-utils krb5-workstation \
         firefox chromium xdg-terminal-exec wiremix mako cups waydroid \
         netbird netbird-ui && \

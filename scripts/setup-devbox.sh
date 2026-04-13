@@ -1,145 +1,42 @@
 #!/bin/bash
 set -euo pipefail
 
-# Setup development distrobox with tools excluded from the main bootc image
-# This creates a containerized development environment with Go, Rust, and Google Cloud CLI
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+ROOT_DIR="$(dirname "$(dirname "$SCRIPT_PATH")")"
+INI_FILE="${ROOT_DIR}/distrobox.ini"
+BREWFILE="${ROOT_DIR}/Brewfile"
 
-DISTROBOX_NAME="dev"
-DISTROBOX_IMAGE="fedora:43"
-RECREATE=false
-
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PACKAGES_FILE="${SCRIPT_DIR}/distrobox-packages.txt"
-EXPORTS_FILE="${SCRIPT_DIR}/distrobox-exports.txt"
-
-# Function to read config file (ignoring comments and empty lines)
-read_config_file() {
-    local file="$1"
-    if [[ ! -f "$file" ]]; then
-        echo "Error: Config file not found: $file" >&2
-        exit 1
+sync_packages() {
+    # Install/update dnf packages from distrobox.ini
+    local packages
+    packages=$(grep '^additional_packages=' "${INI_FILE}" | sed 's/additional_packages="//' | sed 's/"$//' | tr -s ' ')
+    if [[ -n "$packages" ]]; then
+        echo "Syncing dnf packages..."
+        sudo dnf install -y $packages
     fi
-    grep -v '^\s*#' "$file" | grep -v '^\s*$' | sed 's/^\s*//' | sed 's/\s*$//'
+
+    # Install Homebrew if not present
+    if ! command -v brew &> /dev/null; then
+        echo "Installing Homebrew..."
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+
+    # Install/update brew packages from Brewfile
+    echo "Syncing brew packages..."
+    brew bundle --file="${BREWFILE}"
 }
 
-# Parse arguments
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --recreate)
-            RECREATE=true
-            shift
-            ;;
-        -h|--help)
-            echo "Usage: $0 [--recreate]"
-            echo
-            echo "Options:"
-            echo "  --recreate    Force recreation of the distrobox (clean slate)"
-            echo "  -h, --help    Show this help message"
-            echo
-            echo "Default behavior: Updates existing distrobox or creates new one if needed"
-            exit 0
-            ;;
-        *)
-            echo "Error: Unknown option: $1"
-            echo "Run '$0 --help' for usage information"
-            exit 1
-            ;;
-    esac
-done
-
-echo "Setting up development distrobox: ${DISTROBOX_NAME}"
-echo "Using image: ${DISTROBOX_IMAGE}"
-echo
-
-# Check if distrobox command exists
-if ! command -v distrobox &> /dev/null; then
-    echo "Error: distrobox is not installed"
-    exit 1
+# If we're inside the distrobox, sync packages directly
+if [[ "${CONTAINER_ID:-}" == "dev" ]]; then
+    sync_packages
+    exit 0
 fi
 
-# Check if the distrobox already exists
-DISTROBOX_EXISTS=false
-if distrobox list | grep -q "^${DISTROBOX_NAME} "; then
-    DISTROBOX_EXISTS=true
-fi
+# Ensure the script is available as a command
+mkdir -p "${HOME}/.local/bin"
+ln -sf "${SCRIPT_PATH}" "${HOME}/.local/bin/setup-devbox"
 
-# Handle recreation or smart update
-if $DISTROBOX_EXISTS; then
-    if $RECREATE; then
-        echo "Distrobox '${DISTROBOX_NAME}' exists. Recreating..."
-        distrobox rm -f "${DISTROBOX_NAME}"
-        DISTROBOX_EXISTS=false
-    else
-        echo "Distrobox '${DISTROBOX_NAME}' already exists. Updating packages..."
-    fi
-fi
-
-# Create the distrobox if it doesn't exist
-if ! $DISTROBOX_EXISTS; then
-    echo "Creating distrobox '${DISTROBOX_NAME}'..."
-    distrobox create \
-        --name "${DISTROBOX_NAME}" \
-        --image "${DISTROBOX_IMAGE}" \
-        --yes
-    echo
-fi
-
-echo "Installing/updating development packages in distrobox..."
-
-# Read packages from config file
-PACKAGES=$(read_config_file "$PACKAGES_FILE" | tr '\n' ' ')
-echo "Packages to install: $PACKAGES"
-echo
-
-# Install packages inside the distrobox
-distrobox enter "${DISTROBOX_NAME}" -- bash -c "
-set -euo pipefail
-
-echo 'Adding Google Cloud CLI repository...'
-sudo tee /etc/yum.repos.d/google-cloud-sdk.repo > /dev/null << EOF
-[google-cloud-cli]
-name=Google Cloud CLI
-baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el9-x86_64
-enabled=1
-gpgcheck=1
-repo_gpgcheck=0
-gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-EOF
-
-echo 'Installing packages...'
-sudo dnf install -y $PACKAGES
-
-echo 'Development packages installed successfully!'
-"
-
-echo
-echo "Exporting commands to host..."
-
-# Build a single script that exports all binaries in one distrobox session
-EXPORT_SCRIPT=""
-while IFS= read -r binary; do
-    echo "Will export: $binary"
-    EXPORT_SCRIPT+="distrobox-export --bin ${binary} --export-path ~/.local/bin || echo 'Warning: failed to export ${binary}';"
-done < <(read_config_file "$EXPORTS_FILE")
-
-# Run all exports in a single distrobox enter session
-distrobox enter "${DISTROBOX_NAME}" -- bash -c "${EXPORT_SCRIPT}"
-
-echo
-echo "✓ Development distrobox setup complete!"
-echo
-echo "Usage:"
-echo "  - Enter the distrobox:    distrobox enter ${DISTROBOX_NAME}"
-echo "  - Run Go from host:       go version"
-echo "  - Run Rust from host:     cargo --version"
-echo "  - Run gcloud from host:   gcloud --version"
-echo "  - List exported apps:     ls ~/.local/bin/"
-echo
-echo "Configuration:"
-echo "  - Packages:               ${PACKAGES_FILE}"
-echo "  - Exports:                ${EXPORTS_FILE}"
-echo
-echo "Exported commands are available in your PATH (~/.local/bin)"
-echo
-echo "Tip: Run this script again to update packages, or use --recreate for a fresh start"
+# From the host: create/update the container, then sync
+distrobox assemble create --file "${INI_FILE}" "$@"
+distrobox enter dev -- "${SCRIPT_PATH}"
