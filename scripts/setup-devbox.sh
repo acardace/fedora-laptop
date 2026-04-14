@@ -24,7 +24,7 @@ sync_packages() {
 
     # Install/update brew packages from Brewfile
     echo "Syncing brew packages..."
-    brew bundle --file="${BREWFILE}"
+    brew bundle --file="${BREWFILE}" install --upgrade --cleanup
 }
 
 # If we're inside the distrobox, sync packages directly
