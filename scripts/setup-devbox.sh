@@ -27,15 +27,15 @@ sync_packages() {
     brew bundle --file="${BREWFILE}" install --upgrade --cleanup
 }
 
+# Ensure the script is available as a command
+mkdir -p "${HOME}/.local/bin"
+ln -sf "${SCRIPT_PATH}" "${HOME}/.local/bin/setup-devbox"
+
 # If we're inside the distrobox, sync packages directly
 if [[ "${CONTAINER_ID:-}" == "dev" ]]; then
     sync_packages
     exit 0
 fi
-
-# Ensure the script is available as a command
-mkdir -p "${HOME}/.local/bin"
-ln -sf "${SCRIPT_PATH}" "${HOME}/.local/bin/setup-devbox"
 
 # From the host: create/update the container, then sync
 distrobox assemble create --file "${INI_FILE}" "$@"
