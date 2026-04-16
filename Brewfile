@@ -1,6 +1,7 @@
 tap "anomalyco/tap"
 tap "fluxcd/tap"
 
+brew "agg"
 brew "bash-language-server"
 brew "bitwarden-cli"
 brew "delve"
@@ -18,3 +19,4 @@ brew "lua-language-server"
 brew "yaml-language-server"
 brew "anomalyco/tap/opencode"
 brew "velero"
+brew "neovim"
