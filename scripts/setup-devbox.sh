@@ -25,6 +25,9 @@ sync_packages() {
     # Install/update brew packages from Brewfile
     echo "Syncing brew packages..."
     brew bundle --file="${BREWFILE}" install --upgrade --cleanup
+
+    # Helm plugins
+    helm plugin install https://github.com/databus23/helm-diff --verify=false
 }
 
 # Ensure the script is available as a command
