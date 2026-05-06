@@ -28,6 +28,9 @@ sync_packages() {
 
     # Helm plugins
     helm plugin install https://github.com/databus23/helm-diff --verify=false
+
+    # gh plugins
+    gh extension install --force acardace/gh-review
 }
 
 # Ensure the script is available as a command
