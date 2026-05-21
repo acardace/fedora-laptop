@@ -3,8 +3,7 @@ FROM quay.io/fedora/fedora-bootc:latest
 # Copy local RPM packages
 COPY rpms/*.rpm .
 
-# Add NetBird repository and import its GPG key for non-interactive builds
-RUN rpm --import https://pkgs.netbird.io/yum/repodata/repomd.xml.key
+# Add NetBird repository
 COPY rootfs/etc/yum.repos.d/netbird.repo /etc/yum.repos.d/netbird.repo
 
 # Add third-party repositories
