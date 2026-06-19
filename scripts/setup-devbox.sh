@@ -45,5 +45,6 @@ if [[ "${CONTAINER_ID:-}" == "dev" ]]; then
 fi
 
 # From the host: create/update the container, then sync
-distrobox assemble create --file "${INI_FILE}" "$@"
+distrobox assemble create --name dev --file "${INI_FILE}" "$@"
+distrobox assemble create --name dev-root --file "${INI_FILE}" "$@"
 distrobox enter dev -- "${SCRIPT_PATH}"
