@@ -8,14 +8,13 @@ COPY rootfs/etc/yum.repos.d/netbird.repo /etc/yum.repos.d/netbird.repo
 
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
-    dnf copr enable -y solopasha/hyprland && \
+    dnf copr enable -y lionheartp/Hyprland && \
     dnf copr enable -y washkinazy/wayland-wm-extras
 
 # Install packages
 RUN dnf install -y --setopt=tsflags=noscripts \
-        hyprland hypridle hyprshot hyprpanel hyprsunset hyprprop \
+        hyprland hypridle hyprshot hyprsunset hyprprop \
         hyprlock hyprpolkitagent xdg-desktop-portal-hyprland \
-        hyprland-autoname-workspaces \
         hyprland-plugins hyprland-contrib hyprqt6engine \
         pipewire wireplumber \
         qt5-qtwayland qt6-qtwayland qt5ct qt6ct \
@@ -25,7 +24,7 @@ RUN dnf install -y --setopt=tsflags=noscripts \
         glibc-langpack-en \
         kde-connect \
         flatpak btop pamixer playerctl elephant swayosd walker \
-        network-manager-applet blueman waybar swww protonvpn-cli \
+        network-manager-applet blueman waybar swww \
         rofi udiskie pavucontrol brightnessctl flatseal \
         distrobox tailscale fastfetch neovim git fish fzf ripgrep bat \
         wireguard-tools NetworkManager-openvpn alacritty kitty \
