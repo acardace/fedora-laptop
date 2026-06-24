@@ -25,6 +25,7 @@ sync_packages() {
     # Install/update brew packages from Brewfile
     echo "Syncing brew packages..."
     brew trust anomalyco/tap
+    brew trust fluxcd/tap
     brew bundle --file="${BREWFILE}" install --upgrade
 
     # Helm plugins
