@@ -9,7 +9,10 @@ COPY rootfs/etc/yum.repos.d/netbird.repo /etc/yum.repos.d/netbird.repo
 # Add third-party repositories
 RUN dnf install -y 'dnf5-command(copr)' && \
     dnf copr enable -y lionheartp/Hyprland && \
-    dnf copr enable -y washkinazy/wayland-wm-extras
+    dnf copr enable -y washkinazy/wayland-wm-extras && \
+    dnf copr enable -y solopasha/hyprland && \
+    dnf config-manager setopt "copr:copr.fedorainfracloud.org:lionheartp:Hyprland.priority=1" && \
+    dnf config-manager setopt "copr:copr.fedorainfracloud.org:solopasha:hyprland.priority=99"
 
 # Install packages
 RUN dnf install -y --setopt=tsflags=noscripts \
