@@ -40,7 +40,7 @@ RUN dnf install -y --setopt=tsflags=noscripts \
         fprintd fprintd-pam pinentry-qt \
         alsa-ucm alsa-utils krb5-workstation \
         firefox chromium xdg-terminal-exec wiremix mako cups waydroid \
-        netbird netbird-ui && \
+        netbird netbird-ui hyprland-guiutils && \
     dnf install -y --setopt=tsflags=noscripts *.rpm && \
     rm *.rpm && \
     dnf clean all
